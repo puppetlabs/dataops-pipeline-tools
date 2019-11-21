@@ -58,7 +58,7 @@ result is set to `parsed_results`.
 
 #### bq_schema_generator
 This has one function, which uses the bq-schema-generator library's `SchemaGenerator()` class to generate a schema
-for data that is being uploaded to BQ. Documentation for that library can be fond here: 
+for data that is being uploaded to BQ. Documentation for that library can be found here: 
 https://github.com/bxparks/bigquery-schema-generator
 An example of usage:
 ```python
