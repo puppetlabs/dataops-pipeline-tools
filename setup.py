@@ -10,7 +10,7 @@ setup(
     version='0.0.1',
     url='https://github.com/puppetlabs/dataops-pipeline-tools',
     author_email='bizappdev@puppet.com',
-    packages=find_packages(),
+    packages=['dataops_pipeline_tools'],
     license='Apache License 2.0',
     install_requires=[
         'requests==2.22.0',
