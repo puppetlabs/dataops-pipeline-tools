@@ -1,4 +1,4 @@
-from setuptools import setup
+from setuptools import setup, find_packages
 
 long_description = '''
 DataOps Pipeline Tools is a library that contains functions used regularly in
@@ -10,7 +10,7 @@ setup(
     version='0.0.1',
     url='https://github.com/puppetlabs/dataops-pipeline-tools',
     author_email='bizappdev@puppet.com',
-    packages=['dataops-pipeline-tools', 'dataops-pipeline-tools.tools'],
+    packages=find_packages(),
     license='Apache License 2.0',
     install_requires=[
         'requests==2.22.0',
