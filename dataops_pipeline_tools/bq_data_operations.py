@@ -36,12 +36,12 @@ def str_to_gbq_field_name(in_str: str) -> str:
 def to_gbq_keys(obj: dict) -> dict:
     """Returns an identical dict to the input dict, except top-level keys are
     replaced with Google BigQuery-field-compliant keys.
-    This function should be used with the object_hook arg to json.dumps().
+    This function should be used with the object_hook arg to json.loads().
     When used as an object_hook, all dictionary keys will be recursively
     changed to BQ-compliant keys.
 
     Example:
-        gbq_compliant_data = json.dumps(data, object_hook=to_gbq_keys)
+        gbq_compliant_data = json.loads(data, object_hook=to_gbq_keys)
 
     Args:
         obj: A dict.
