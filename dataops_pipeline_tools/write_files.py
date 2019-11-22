@@ -3,10 +3,12 @@ import json
 
 def write_to_file(data: dict, outfile: str, schema: dict) -> None:
     """Write data to a json file in either newline-delimited or pretty json format.
+    Write schema to file in json format.
 
     Args:
         data: The data to write to a file.
         outfile: The path to write the file out to.
+        schema: The schema dictionary to write to a schema file
     Returns:
         None
     """

@@ -3,6 +3,15 @@ import logging
 from bigquery_schema_generator.generate_schema import SchemaGenerator
 
 def generate_bq_schema(obj: dict, options: dict = None):
+    """Generates a bigquery compliant schema using the bigquery-schema-generator library.
+
+    Args:
+        obj: the data structure to create a big query schema for
+        options (optional): a dictionary of options to pass to the SchemaGenerator class.
+        If nothing is specified default values are used
+    Returns:
+        A bigquery schema dictionary
+    """
 
     if not options:
         options = {
