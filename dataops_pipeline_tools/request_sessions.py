@@ -31,7 +31,7 @@ def perform_get(session: Session, url: str, params: str = None) -> Response:
 
     return response.json()
 
-def perform_post(session: Session, url: str, data: str)
+def perform_post(session: Session, url: str, data: str) -> Response:
     """Performs HTTPS POST request using python Requests.
 
     Args:
@@ -45,7 +45,7 @@ def perform_post(session: Session, url: str, data: str)
                     status_forcelist=[429, 503, 503, 504])
     session.mount('https://', HTTPAdapter(max_retries=retries))
     try:
-        session.post(data=data, url=url)
+        response = session.post(url=url, data=data)
         response.raise_for_status()
     except HTTPError as err:
         logging.error(err)
