@@ -30,3 +30,25 @@ def perform_get(session: Session, url: str, params: str = None) -> Response:
         sys.exit(1)
 
     return response.json()
+
+def perform_post(session: Session, url: str, data: str)
+    """Performs HTTPS POST request using python Requests.
+
+    Args:
+        session: python Requests session
+        url: the FQDN to perform the POST request against
+        data: the data payload to send to the FQDN
+    Returns:
+        The requests Response object
+    """
+    retries = Retry(total=20, backoff_factor=.1,
+                    status_forcelist=[429, 503, 503, 504])
+    session.mount('https://', HTTPAdapter(max_retries=retries))
+    try:
+        session.post(data=data, url=url)
+        response.raise_for_status()
+    except HTTPError as err:
+        logging.error(err)
+        sys.exit(1)
+
+    return response
