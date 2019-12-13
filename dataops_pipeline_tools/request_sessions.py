@@ -52,3 +52,25 @@ def perform_post(session: Session, url: str, data: str) -> Response:
         sys.exit(1)
 
     return response
+
+def perform_put(session: Session, url: str, data: str) -> Response:
+    """Performs HTTPS PUT request using python Requests.
+
+    Args:
+        session: python Requests session
+        url: the FQDN to perform the POST request against
+        data: the data payload to send to the FQDN
+    Returns:
+        The requests Response object
+    """
+    retries = Retry(total=20, backoff_factor=.1,
+                    status_forcelist=[429, 503, 503, 504])
+    session.mount('https://', HTTPAdapter(max_retries=retries))
+    try:
+        response = session.put(url=url, data=data)
+        response.raise_for_status()
+    except HTTPError as err:
+        logging.error(err)
+        sys.exit(1)
+
+    return response
