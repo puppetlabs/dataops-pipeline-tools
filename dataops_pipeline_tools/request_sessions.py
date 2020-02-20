@@ -29,7 +29,7 @@ def perform_get(session: Session, url: str, params: str = None) -> Response:
         logging.error(err)
         sys.exit(1)
 
-    return response.json()
+    return response
 
 def perform_post(session: Session, url: str, data: str) -> Response:
     """Performs HTTPS POST request using python Requests.
