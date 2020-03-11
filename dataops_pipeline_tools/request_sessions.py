@@ -31,7 +31,7 @@ def perform_get(session: Session, url: str, params: str = None) -> Response:
 
     return response
 
-def perform_post(session: Session, url: str, data: str) -> Response:
+def perform_post(session: Session, url: str, data: dict = None) -> Response:
     """Performs HTTPS POST request using python Requests.
 
     Args:
@@ -53,7 +53,7 @@ def perform_post(session: Session, url: str, data: str) -> Response:
 
     return response
 
-def perform_put(session: Session, url: str, data: str) -> Response:
+def perform_put(session: Session, url: str, data: dict = None) -> Response:
     """Performs HTTPS PUT request using python Requests.
 
     Args:
