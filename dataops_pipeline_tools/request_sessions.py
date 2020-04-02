@@ -27,7 +27,6 @@ def perform_get(session: Session, url: str, params: str = None) -> Response:
         response.raise_for_status()
     except HTTPError as err:
         logging.error(err)
-        sys.exit(1)
 
     return response
 
@@ -49,7 +48,6 @@ def perform_post(session: Session, url: str, data: dict = None) -> Response:
         response.raise_for_status()
     except HTTPError as err:
         logging.error(err)
-        sys.exit(1)
 
     return response
 
@@ -71,6 +69,5 @@ def perform_put(session: Session, url: str, data: dict = None) -> Response:
         response.raise_for_status()
     except HTTPError as err:
         logging.error(err)
-        sys.exit(1)
 
     return response
