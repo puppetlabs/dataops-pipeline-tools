@@ -3,6 +3,7 @@ import json
 
 from smart_open import open as smartopen
 
+
 def write_to_file(data: dict, outfile: str, schema: dict) -> None:
     """Write data to a json file in either newline-delimited or pretty json format.
     Write schema to file in json format.
@@ -14,14 +15,17 @@ def write_to_file(data: dict, outfile: str, schema: dict) -> None:
     Returns:
         None
     """
-    with jsonlines.open(f"{outfile}.ndjson", 'w') as writer:
+    with jsonlines.open(f"{outfile}.ndjson", "w") as writer:
         for entry in data:
             writer.write(entry)
 
     with open(f"{outfile}.bqschema.json", "w") as writer:
         json.dump(schema, writer, indent=2, sort_keys=True)
 
-def stream_data_to_gcs(data: dict, bucket: str, service: str, endpoint: str, date: str) -> None:
+
+def stream_data_to_gcs(
+    data: dict, bucket: str, service: str, endpoint: str, date: str
+) -> None:
     """Stream data in newline-delimited json format to Google Cloud Storage.
 
     Args:
@@ -34,12 +38,15 @@ def stream_data_to_gcs(data: dict, bucket: str, service: str, endpoint: str, dat
         None
     """
     with smartopen(
-        f"gs://{bucket}/{service}/{endpoint}/{endpoint}-{date}.ndjson", "w"
+        f"gs://{bucket}/{service}/{endpoint}/{date}/{endpoint}.ndjson", "w"
     ) as file_out:
         for item in data:
             file_out.write(f"{json.dumps(item)}\n")
 
-def stream_schema_to_gcs(schema: dict, bucket: str, service: str, endpoint: str) -> None:
+
+def stream_schema_to_gcs(
+    schema: dict, bucket: str, service: str, endpoint: str, date: str
+) -> None:
     """
     Stream schema to GCS in json format.
 
@@ -52,6 +59,6 @@ def stream_schema_to_gcs(schema: dict, bucket: str, service: str, endpoint: str)
         None
     """
     with smartopen(
-        f"gs://{bucket}/{service}/{endpoint}/{endpoint}.schema.json", "w"
+        f"gs://{bucket}/{service}/{endpoint}/{date}/{endpoint}.gbqschema.json", "w"
     ) as file_out:
         file_out.write(json.dumps(schema))
