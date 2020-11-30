@@ -21,24 +21,37 @@ def write_to_file(data: dict, outfile: str, schema: dict) -> None:
     with open(f"{outfile}.bqschema.json", "w") as writer:
         json.dump(schema, writer, indent=2, sort_keys=True)
 
-def stream_to_gcs(data: dict, bucket: str, outfile: str, schema: dict, date: str) -> None:
+def stream_data_to_gcs(data: dict, bucket: str, service: str, endpoint: str, date: str) -> None:
     """Stream data in newline-delimited json format to Google Cloud Storage.
-    Stream schema to GCS in json format.
 
     Args:
         data: The data to write to a file
-        outfile: The path to write the file to
-        schema: The schema dictionary to write to a schema file
+        bucket: The gcs bucket to stream to
+        service: The service we are getting data from
+        endpoint: The API endpoint we are getting data for
+        date: The current date to use in the filename
     Returns:
         None
     """
     with smartopen(
-        f"gs://{bucket}/puppet_download_logs/{outfile}/{outfile}-{date}.ndjson", "w"
+        f"gs://{bucket}/puppet_download_logs/{service}/{endpoint}-{date}.ndjson", "w"
     ) as file_out:
         for item in data:
             file_out.write(f"{json.dumps(item)}\n")
 
+def stream_schema_to_gcs(schema: dict, bucket: str, service: str, endpoint: str) -> None:
+    """
+    Stream schema to GCS in json format.
+
+    Args:
+        schema: The schema data to write to a file
+        bucket: The gcs bucket to stream to
+        service: The service we are getting data from
+        endpoint: The API endpoint we are getting data for
+    Returns:
+        None
+    """
     with smartopen(
-        f"gs://{bucket}/puppet_download_logs/{outfile}/{outfile}.schema.json", "w"
+        f"gs://{bucket}/puppet_download_logs/{service}/{endpoint}.schema.json", "w"
     ) as file_out:
         file_out.write(json.dumps(schema))

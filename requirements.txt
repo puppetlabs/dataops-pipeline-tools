@@ -1,4 +1,4 @@
 requests==2.22.0
 bigquery-schema-generator==0.5.1
 jsonlines==1.2.0
-smart-open[all]==2.1.0
+smart-open[all]==4.0.1
