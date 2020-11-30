@@ -34,7 +34,7 @@ def stream_data_to_gcs(data: dict, bucket: str, service: str, endpoint: str, dat
         None
     """
     with smartopen(
-        f"gs://{bucket}/puppet_download_logs/{service}/{endpoint}-{date}.ndjson", "w"
+        f"gs://{bucket}/{service}/{endpoint}-{date}.ndjson", "w"
     ) as file_out:
         for item in data:
             file_out.write(f"{json.dumps(item)}\n")
@@ -52,6 +52,6 @@ def stream_schema_to_gcs(schema: dict, bucket: str, service: str, endpoint: str)
         None
     """
     with smartopen(
-        f"gs://{bucket}/puppet_download_logs/{service}/{endpoint}.schema.json", "w"
+        f"gs://{bucket}/{service}/{endpoint}.schema.json", "w"
     ) as file_out:
         file_out.write(json.dumps(schema))
