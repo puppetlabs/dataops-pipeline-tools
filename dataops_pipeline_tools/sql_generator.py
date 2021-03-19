@@ -9,7 +9,7 @@ import datetime
 
 from google.cloud import bigquery
 from google.cloud import exceptions
-from google.cloud.bigquery.table import RowIterator
+from google.cloud.bigquery.table import RowIterator, Row
 
 
 class BigQueryDML:
@@ -31,6 +31,22 @@ class BigQueryDML:
         self.dataset = bq_dataset
         self.table = bq_table
         self.table_ref = f"{bq_project}.{bq_dataset}.{bq_table}"
+
+    @staticmethod
+    def create_bq_payload(data: Row):
+        """
+        Takes in a row object from BigQuery and returns a dictionary
+        of key value pairs based on the row columns and values
+
+        Args:
+            data: The Row object from the BigQuery API
+        Returns:
+            A python dictionary object
+        """
+
+        results = {k:v for k, v in data.items()}
+
+        return results
 
     @staticmethod
     def convert_bq_datetime_to_str(data: dict, date_format: str) -> dict:
