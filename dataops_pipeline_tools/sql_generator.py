@@ -1,3 +1,9 @@
+"""
+Creates a class BigQueryDML that generates DML queries for Google BigQuery.
+Can dynamically generate SELECT, INSERT, and UPDATE DML queries based on
+a dictionary input to the class.
+"""
+
 import logging
 import datetime
 
@@ -5,14 +11,20 @@ from google.cloud import bigquery
 from google.cloud import exceptions
 from google.cloud.bigquery.table import RowIterator
 
-class BigQueryDML():
 
-    def __init__(
-            self,
-            bq_project,
-            bq_dataset,
-            bq_table
-        ):
+class BigQueryDML:
+    """
+    A class that allows generation of DML queries, and converts
+    dictionaries to DML queries
+
+    Args:
+        bq_project: The Google Cloud project the BigQuery instance you are
+                    reading/writing from lives in
+        bq_dataset: The BigQuery dataset that you are reading/writing from
+        bq_table: The BigQuery table you are reading/writing from
+    """
+
+    def __init__(self, bq_project, bq_dataset, bq_table):
 
         self.project = bq_project
         self.client = bigquery.Client(project=bq_project)
@@ -20,7 +32,8 @@ class BigQueryDML():
         self.table = bq_table
         self.table_ref = f"{bq_project}.{bq_dataset}.{bq_table}"
 
-    def _convert_bq_datetime_to_str(self, data: dict) -> dict:
+    @staticmethod
+    def convert_bq_datetime_to_str(data: dict, date_format: str) -> dict:
         """
         Converts a datetime object to a datetime string that matches the
         datetime string we get back from Zendesk, for comparison against live
@@ -28,17 +41,19 @@ class BigQueryDML():
 
         Args:
             data: The dictionary representation of a BigQuery row of data
+            date_format: The format string for how you'd like the datetime represented
         Returns:
-            The dictionary with datetimes converted to datetime strings
+            The dictionary with datetimes converted to formatted datetime strings
         """
 
-        for k, v in data.items():
-            if isinstance(v, datetime.datetime):
-                data[k] = v.strftime("%Y-%m-%dT%H:%M:%SZ")
+        for key, value in data.items():
+            if isinstance(value, datetime.datetime):
+                data[key] = value.strftime(date_format)
 
         return data
 
-    def _check_timestamp(self, timestamp: str) -> str:
+    @staticmethod
+    def __check_timestamp(timestamp: str) -> str:
         """
         Checks if the values of a timestamp fields is None.
         If None, convert to NULL string for SQL query, otherwise
@@ -57,7 +72,6 @@ class BigQueryDML():
 
         return result
 
-
     def alter_timestamps(self, data: dict, keys: list) -> dict:
         """
         Takes in a list of keys that represent values that are timestamps in data dictionary.
@@ -72,13 +86,13 @@ class BigQueryDML():
         """
 
         for key in keys:
-            timestamp = self._check_timestamp(data[key])
+            timestamp = self.__check_timestamp(data[key])
             data[key] = timestamp
 
         return data
 
-
-    def _parse_insert_columns(self, data: dict, **kwargs) -> str:
+    @staticmethod
+    def parse_insert_columns(data: dict, **kwargs) -> str:
         """
         Parses keys of a dictionary into BigQuery DML compliant
         column string for first half of a DML INSERT query
@@ -101,8 +115,7 @@ class BigQueryDML():
 
         return key_string
 
-
-    def _parse_insert_values(self, data: dict, **kwargs) -> str:
+    def parse_insert_values(self, data: dict, **kwargs) -> str:
         """
         Parses values of a dictionary into BigQuery DML compliant
         values string for second half of a DML INSERT query
@@ -125,14 +138,14 @@ class BigQueryDML():
                 values = values + f"{value}, "
 
             elif isinstance(value, datetime.datetime):
-                value = self._check_timestamp(value.strftime("%Y-%m-%dT%H:%M:%SZ"))
+                value = self.__check_timestamp(value.strftime("%Y-%m-%dT%H:%M:%SZ"))
                 values = values + f"{value}, "
 
             elif isinstance(value, int):
                 values = values + f"{value}, "
 
             elif isinstance(value, dict):
-                child = self._parse_insert_values(value)
+                child = self.parse_insert_values(value)
                 if child.endswith(", "):
                     child = f"({child[:-2]}), "
                 else:
@@ -144,8 +157,7 @@ class BigQueryDML():
 
         return values
 
-
-    def _parse_insert_query_data(self, data: dict) -> str:
+    def parse_insert_query_data(self, data: dict) -> str:
         """
         Parses a dictionary into a full BigQuery DML INSERT query
 
@@ -159,8 +171,8 @@ class BigQueryDML():
         query_first_half = f"INSERT `{self.table_ref}` ("
         query_second_half = "VALUES("
 
-        keys = self._parse_insert_columns(data, base_string=query_first_half)
-        values = self._parse_insert_values(data, base_string=query_second_half)
+        keys = self.parse_insert_columns(data, base_string=query_first_half)
+        values = self.parse_insert_values(data, base_string=query_second_half)
 
         if values.endswith(", "):
             values = values[:-2]
@@ -168,8 +180,7 @@ class BigQueryDML():
         results = f"{keys}{values})"
         return results
 
-
-    def _parse_update_query_data(self, data: dict, **kwargs) -> str:
+    def parse_update_query_data(self, data: dict, **kwargs) -> str:
         """
         Parses a dictionary into a BigQuery DML UPDATE query.
 
@@ -187,12 +198,12 @@ class BigQueryDML():
         # that is added to each sub-dict key in the DML string when
         # the function is called recursively.
         # This can be seen on line 358
-        parent_key = kwargs.get('parent_key', None)
+        parent_key = kwargs.get("parent_key", None)
 
         # If we have nested dictionaries we can pass the current
         # query that is partially built back into the function
         # so it can be appended to when called recursively
-        current_query = kwargs.get('current_query', None)
+        current_query = kwargs.get("current_query", None)
 
         if current_query:
             query = current_query
@@ -209,17 +220,18 @@ class BigQueryDML():
                 query = query + f"{key} = {value}, "
 
             elif isinstance(value, datetime.datetime):
-                value = self._check_timestamp(value.strftime("%Y-%m-%dT%H:%M:%SZ"))
+                value = self.__check_timestamp(value.strftime("%Y-%m-%dT%H:%M:%SZ"))
                 query = query + f"{key} = TIMESTAMP({value}), "
 
             elif isinstance(value, dict):
-                query = self._parse_update_query_data(value, parent_key=key, current_query=query)
+                query = self.parse_update_query_data(
+                    value, parent_key=key, current_query=query
+                )
 
             elif not value:
                 query = query + f"{key} = NULL, "
 
         return query
-
 
     def generate_sql_query(self, **kwargs) -> str:
         """
@@ -236,11 +248,10 @@ class BigQueryDML():
             A full, BigQuery compliant DML query string
         """
 
-
-        data = kwargs.get('data', None)
-        query_type = kwargs.get('query_type', 'SELECT')
-        query_select = kwargs.get('query_selector', None)
-        query_where = kwargs.get('query_where', None)
+        data = kwargs.get("data", None)
+        query_type = kwargs.get("query_type", "SELECT")
+        query_select = kwargs.get("query_selector", None)
+        query_where = kwargs.get("query_where", None)
 
         # Build select queries
         if query_type == "SELECT":
@@ -249,19 +260,21 @@ class BigQueryDML():
             elif not query_select and query_where:
                 complete_query = f"SELECT * FROM {self.table_ref} {query_where}"
             elif query_select and query_where:
-                complete_query = f"SELECT {query_select} FROM {self.table_ref} {query_where}"
+                complete_query = (
+                    f"SELECT {query_select} FROM {self.table_ref} {query_where}"
+                )
             else:
                 complete_query = f"SELECT * FROM {self.table_ref}"
 
         # Build insert queries
         elif query_type == "INSERT":
 
-            complete_query = self._parse_insert_query_data(data)
+            complete_query = self.parse_insert_query_data(data)
 
         # Build Update Queries
         elif query_type == "UPDATE":
 
-            query = self._parse_update_query_data(data)
+            query = self.parse_update_query_data(data)
 
             if query.endswith(", "):
                 query = query[:-2]
@@ -291,7 +304,7 @@ class BigQueryDML():
             results = bq_query.result()
             bq_results = results
         except exceptions.NotFound:
-            logging.error(f"Table not found for query: {query}")
+            logging.error("Table not found for query: %s", query)
             bq_results = None
 
         return bq_results
@@ -314,7 +327,6 @@ class BigQueryDML():
 
         return results
 
-
     def update_record(self, data: dict) -> str:
         """
         Runs an UPDATE DML query against a BigQuery table
@@ -329,7 +341,9 @@ class BigQueryDML():
 
         query_where = f"WHERE id = {data['id']}"
 
-        update_query = self.generate_sql_query(query_type="UPDATE", query_where=query_where, data=data)
+        update_query = self.generate_sql_query(
+            query_type="UPDATE", query_where=query_where, data=data
+        )
 
         results = self.run_bq_query(update_query)
 
@@ -351,11 +365,13 @@ class BigQueryDML():
 
         query_where = f"WHERE id = {data['id']}"
 
-        search_query = self.generate_sql_query(query_type="SELECT", query_where=query_where)
+        search_query = self.generate_sql_query(
+            query_type="SELECT", query_where=query_where
+        )
 
         check_for_rows = self.run_bq_query(search_query)
 
-        if isinstance(check_for_rows, _EmptyRowIterator):
+        if check_for_rows.total_rows == 0:
 
             print(f"INSERTING_RECORD {data['id']}")
             insert = self.insert_record(data)
