@@ -373,17 +373,17 @@ class BigQueryDML:
 
         if check_for_rows.total_rows == 0:
 
-            print(f"INSERTING_RECORD {data['id']}")
+            logging.info(f"INSERTING_RECORD {data['id']}")
             insert = self.insert_record(data)
 
             if insert:
-                results = f"UPDATE successful for ticket metric {data['id']}"
+                results = f"INSERT successful for ticket metric {data['id']}"
             else:
-                results = f"UPDATE failed for ticket metric {data['id']}"
+                results = f"INSERT failed for ticket metric {data['id']}"
 
         else:
 
-            print(f"UPDATING RECORD: {data['id']}")
+            logging.info(f"UPDATING RECORD: {data['id']}")
             update = self.update_record(data)
 
             if update:
