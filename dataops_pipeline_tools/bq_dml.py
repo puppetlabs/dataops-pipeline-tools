@@ -103,7 +103,7 @@ class BigQueryDML:
             The dictionary with updated datetime values
         """
 
-        for key, value in data:
+        for key, value in data.items():
             try:
                 parse(data[key])
                 timestamp = self.__check_timestamp(data[key])
