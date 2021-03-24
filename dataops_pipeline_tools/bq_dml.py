@@ -104,6 +104,8 @@ class BigQueryDML:
         """
 
         for key, value in data.items():
+            if isinstance(value, dict):
+                self.alter_timestamps(value)
             try:
                 parse(data[key])
                 timestamp = self.__check_timestamp(data[key])
