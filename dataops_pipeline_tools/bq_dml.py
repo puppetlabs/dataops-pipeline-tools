@@ -7,6 +7,8 @@ a dictionary input to the class.
 import logging
 import datetime
 
+from dateutil.parser import parse
+
 from google.cloud import bigquery
 from google.cloud import exceptions
 from google.cloud.bigquery.table import RowIterator, Row
@@ -88,7 +90,7 @@ class BigQueryDML:
 
         return result
 
-    def alter_timestamps(self, data: dict, keys: list) -> dict:
+    def alter_timestamps(self, data: dict) -> dict:
         """
         Takes in a list of keys that represent values that are timestamps in data dictionary.
         Passes each key's value to check_timestamp, then updates dictionary key to use
@@ -101,9 +103,13 @@ class BigQueryDML:
             The dictionary with updated datetime values
         """
 
-        for key in keys:
-            timestamp = self.__check_timestamp(data[key])
-            data[key] = timestamp
+        for key, value in data:
+            try:
+                parse(data[key])
+                timestamp = self.__check_timestamp(data[key])
+                data[key] = timestamp
+            except:
+                logging.debug(f"Value for {key} is {value}, not a timestamp")
 
         return data
 
