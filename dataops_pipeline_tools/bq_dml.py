@@ -174,10 +174,9 @@ class BigQueryDML:
                 child = "["
                 for item in value:
                     if isinstance(item, dict):
-                        child = child + f"({self.parse_insert_values(item).rstrip(', ')})"
+                        child = child + f"({self.parse_insert_values(item).rstrip(', ')}), "
                     else:
                         child = child + f"{item}, "
-                child = f"{child[:-2]}"
                 values = values + f"{child}], "
 
             elif isinstance(value, dict):
