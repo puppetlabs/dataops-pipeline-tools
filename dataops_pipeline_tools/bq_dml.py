@@ -263,7 +263,7 @@ class BigQueryDML:
             elif isinstance(value, list):
                 for item in value:
                     if isinstance(item, dict):
-                        child = self.parse_update_query_data(item)
+                        child = self.parse_update_query_data(item, current_query=query)
                         child = f"STRUCT({child})"
                     else:
                         child = f"{item}, "
