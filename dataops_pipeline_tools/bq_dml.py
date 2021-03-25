@@ -181,10 +181,10 @@ class BigQueryDML:
             elif isinstance(value, dict):
                 child = self.parse_insert_values(value)
                 if child.endswith(", "):
-                    child = f"({child[:-2]}), "
+                    child = f"{child[:-2]}"
                 else:
-                    child = f"({child}), "
-                values = values + f"{child}"
+                    child = f"{child}"
+                values = values + f"({child}), "
 
             else:
                 values = values + "NULL, "
