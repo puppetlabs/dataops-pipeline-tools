@@ -264,7 +264,7 @@ class BigQueryDML:
                 child = ""
                 for item in value:
                     if isinstance(item, dict):
-                        child = child + f"STRUCT({self.parse_update_query_data(item)})"
+                        child = child + f"STRUCT({self.parse_update_query_data(item, current_query="")})"
                     else:
                         child = child + f"{item}, "
                 query = query + f"[{child.rstrip(', ')}]"
