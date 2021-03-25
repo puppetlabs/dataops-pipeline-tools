@@ -174,8 +174,7 @@ class BigQueryDML:
                 child = "["
                 for item in value:
                     if isinstance(item, dict):
-                        child = child + self.parse_insert_values(item)
-                        child = f"({child})"
+                        child = child + f"({self.parse_insert_values(item)})"
                     else:
                         child = child + f"{item}, "
                 child = f"{child[:-2]}"
