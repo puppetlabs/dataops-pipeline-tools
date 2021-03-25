@@ -155,6 +155,8 @@ class BigQueryDML:
         values = kwargs.get("base_string", "")
 
         for _, value in data.items():
+            print(value)
+            print(type(value))
 
             if isinstance(value, str):
                 if "https://" in value:
