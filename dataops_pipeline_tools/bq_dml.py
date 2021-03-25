@@ -260,6 +260,15 @@ class BigQueryDML:
                 value = self.__check_timestamp(value.strftime("%Y-%m-%dT%H:%M:%SZ"))
                 query = query + f"{key} = TIMESTAMP({value}), "
 
+            elif isinstance(value, list):
+                for item in value:
+                    if isinstance(item, dict):
+                        child = self.parse_update_query_data(value)
+                        child = f"STRUCT({child})"
+                    else:
+                        child = f"{item}, "
+                query = query + f"[{child}]"
+
             elif isinstance(value, dict):
                 query = self.parse_update_query_data(
                     value, parent_key=key, current_query=query
