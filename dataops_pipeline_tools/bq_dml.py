@@ -261,13 +261,15 @@ class BigQueryDML:
                 query = query + f"{key} = TIMESTAMP({value}), "
 
             elif isinstance(value, list):
-                child = ""
+                string = []
                 for item in value:
                     if isinstance(item, dict):
-                        child = child + f"STRUCT({self.parse_update_query_data(item, current_query='')})"
+                        child = f"STRUCT({self.parse_update_query_data(item, current_query=child)})"
+                        string.append(child)
                     else:
-                        child = child + f"{item}, "
-                query = query + f"[{child.rstrip(', ')}]"
+                        child = f"{item}"
+                        string.append(child)
+                query = query + f"[{"".join(string)}]"
 
             elif isinstance(value, dict):
                 query = self.parse_update_query_data(
