@@ -251,6 +251,8 @@ class BigQueryDML:
             if isinstance(value, str):
                 if "https://" in value:
                     value = f'"{value}"'
+                elif "-" in value:
+                    value = f"`{value}`"
                 query = query + f"{key} = {value}, "
 
             elif isinstance(value, int):
