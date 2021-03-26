@@ -264,12 +264,12 @@ class BigQueryDML:
                 string = []
                 for item in value:
                     if isinstance(item, dict):
-                        child = f"STRUCT({self.parse_update_query_data(item, current_query='')})"
+                        child = self.parse_update_query_data(item, current_query='STRUCT(')
                         string.append(child)
                     else:
                         child = f"{item}"
                         string.append(child)
-                query = query + f"[{''.join(string)}]"
+                query = query + f"[{', '.join(string)}]"
 
             elif isinstance(value, dict):
                 query = self.parse_update_query_data(
