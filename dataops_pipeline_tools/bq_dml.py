@@ -269,7 +269,8 @@ class BigQueryDML:
                     else:
                         child = f"{item}"
                         string.append(child)
-                query = query + f"[{', '.join(string)}]"
+                formatted_string = ', '.join(string).rstrip(", ")
+                query = query + f"[{formatted_string}]"
 
             elif isinstance(value, dict):
                 query = self.parse_update_query_data(
