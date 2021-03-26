@@ -266,7 +266,7 @@ class BigQueryDML:
                     if isinstance(item, dict):
                         child = self.parse_update_query_data(item, current_query='STRUCT(')
                         print(f"DICT CHILD: {child}")
-                        child.rstrip(", ")
+                        child.rstrip(",")
                         string.append(f"{child}), ")
                     else:
                         child = f"{item}"
