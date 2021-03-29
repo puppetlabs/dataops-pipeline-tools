@@ -191,9 +191,8 @@ class BigQueryDML:
             "WITHIN"
         ]
 
-        for keyword in reserved_keywords:
-            if keyword in data.upper():
-                return True
+        if data.upper() in reserved_keywords:
+            return True
         else:
             return False
 
