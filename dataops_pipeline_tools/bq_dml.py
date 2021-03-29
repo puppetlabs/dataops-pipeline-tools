@@ -90,6 +90,112 @@ class BigQueryDML:
 
         return result
 
+    @staticmethod
+    def __check_for_reserved_keyword(data: str) -> bool:
+
+        reserved_keywords = [
+            "ALL",
+            "AND",
+            "ANY",
+            "ARRAY",
+            "AS",
+            "ASC",
+            "ASSERT_ROWS_MODIFIED",
+            "AT",
+            "BETWEEN",
+            "BY",
+            "CASE",
+            "CAST",
+            "COLLATE",
+            "CONTAINS",
+            "CREATE",
+            "CROSS",
+            "CUBE",
+            "CURRENT",
+            "DEFAULT",
+            "DEFINE",
+            "DESC",
+            "DISTINCT",
+            "ELSE",
+            "END",
+            "ENUM",
+            "ESCAPE",
+            "EXCEPT",
+            "EXCLUDE",
+            "EXISTS",
+            "EXTRACT",
+            "FALSE",
+            "FETCH",
+            "FOLLOWING",
+            "FOR",
+            "FROM",
+            "FULL",
+            "GROUP",
+            "GROUPING",
+            "GROUPS",
+            "HASH",
+            "HAVING",
+            "IF",
+            "IGNORE",
+            "IN",
+            "INNER",
+            "INTERSECT",
+            "INTERVAL",
+            'INTO',
+            "IS",
+            "JOIN",
+            "LATERAL",
+            "LEFT",
+            "LIKE",
+            "LIMIT",
+            "LOOKUP",
+            "MERGE",
+            "NATURAL",
+            "NEW",
+            "NO",
+            "NOT",
+            "NULL",
+            "NULLS",
+            "OF",
+            "ON",
+            "OR",
+            "ORDER",
+            "OUTER",
+            "OVER",
+            "PARTITION",
+            "PRECEDING",
+            "PROTO",
+            "RANGE",
+            "RECURSIVE",
+            "RESPECT",
+            "RIGHT",
+            "ROLLUP",
+            "ROWS",
+            "SELECT",
+            "SET",
+            "SOME",
+            "STRUCT",
+            "TABLESAMPLE",
+            "THEN",
+            "TO",
+            "TREAT",
+            "TRUE",
+            "UNBOUNDED",
+            "UNION",
+            "UNNEST",
+            "USING",
+            "WHEN",
+            "WHERE",
+            "WINDOW",
+            "WITH",
+            "WITHIN"
+        ]
+
+        if data.upper() in reserved_keywords:
+            return True
+        else:
+            return False
+
     def alter_timestamps(self, data: dict) -> dict:
         """
         Takes in a list of keys that represent values that are timestamps in data dictionary.
@@ -159,6 +265,10 @@ class BigQueryDML:
             print(type(value))
 
             if isinstance(value, str):
+                # Check for reserved key words
+                if self.__check_for_reserved_keyword(value):
+                    value = f"`{value}`"
+
                 if "https://" in value:
                     value = f'"{value}"'
                 values = values + f"{value}, "
@@ -249,6 +359,10 @@ class BigQueryDML:
             if parent_key:
                 key = f"{parent_key}.{key}"
             if isinstance(value, str):
+                # Check for reserved key words
+                if self.__check_for_reserved_keyword(value):
+                    value = f"`{value}`"
+
                 if "https://" in value:
                     value = f'"{value}"'
                 elif "-" in value:
