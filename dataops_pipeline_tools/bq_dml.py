@@ -191,8 +191,9 @@ class BigQueryDML:
             "WITHIN"
         ]
 
-        if data.upper() in reserved_keywords:
-            return True
+        for keyword in reserved_keywords:
+            if keyword in data.upper():
+                return True
         else:
             return False
 
@@ -261,8 +262,6 @@ class BigQueryDML:
         values = kwargs.get("base_string", "")
 
         for _, value in data.items():
-            print(value)
-            print(type(value))
 
             if isinstance(value, str):
                 # Check for reserved key words
@@ -358,16 +357,16 @@ class BigQueryDML:
         for key, value in data.items():
             if parent_key:
                 key = f"{parent_key}.{key}"
+
+            if self.__check_for_reserved_keyword(key):
+                key = f"`{key}`"
+
             if isinstance(value, str):
                 # Check for reserved key words
                 if self.__check_for_reserved_keyword(value):
                     value = f"`{value}`"
 
                 if "https://" in value:
-                    value = f'"{value}"'
-                elif "-" in value:
-                    value = f"`{value}`"
-                elif " " in value:
                     value = f'"{value}"'
                 query = query + f"{key} = {value}, "
 
