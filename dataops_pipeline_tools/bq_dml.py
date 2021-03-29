@@ -264,11 +264,11 @@ class BigQueryDML:
 
             if isinstance(value, str):
                 # Check for reserved key words
-                if self.__check_for_reserved_keyword(value):
-                    value = f"`{value}`"
+                # if self.__check_for_reserved_keyword(value):
+                #     value = f"`{value}`"
 
-                if "https://" in value:
-                    value = f'"{value}"'
+                # if "https://" in value:
+                value = f'"{value}"'
                 values = values + f"{value}, "
 
             elif isinstance(value, datetime.datetime):
@@ -362,11 +362,11 @@ class BigQueryDML:
 
             if isinstance(value, str):
                 # Check for reserved key words
-                if self.__check_for_reserved_keyword(value):
-                    value = f"`{value}`"
+                # if self.__check_for_reserved_keyword(value):
+                #     value = f"`{value}`"
 
-                if "https://" in value:
-                    value = f'"{value}"'
+                # if "https://" in value:
+                value = f'"{value}"'
                 query = query + f"{key} = {value}, "
 
             elif isinstance(value, int):
