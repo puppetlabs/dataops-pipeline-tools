@@ -267,8 +267,12 @@ class BigQueryDML:
                 # if self.__check_for_reserved_keyword(value):
                 #     value = f"`{value}`"
 
-                # if "https://" in value:
-                value = f'"{value}"'
+                if "https://" in value:
+                    value = f'"{value}"'
+                if "-" in value:
+                    value = f'"{value}"'
+                if " " in value:
+                    value = f'"{value}"'
                 values = values + f"{value}, "
 
             elif isinstance(value, datetime.datetime):
