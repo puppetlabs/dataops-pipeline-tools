@@ -7,7 +7,7 @@ data ETL jobs by the DataOps team
 
 setup(
     name='dataops_pipeline_tools',
-    version='0.0.55',
+    version='0.0.56',
     url='https://github.com/puppetlabs/dataops-pipeline-tools',
     author_email='dataops-development@puppet.com',
     packages=['dataops_pipeline_tools'],

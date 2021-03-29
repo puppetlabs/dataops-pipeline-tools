@@ -369,8 +369,8 @@ class BigQueryDML:
                 # if self.__check_for_reserved_keyword(value):
                 #     value = f"`{value}`"
 
-                # if "https://" in value:
-                value = f'"{value}"'
+                if "https://" in value:
+                    value = f'"{value}"'
                 query = query + f"{key} = {value}, "
 
             elif isinstance(value, int):
@@ -457,7 +457,6 @@ class BigQueryDML:
         else:
             raise ValueError("query_type not one of SELECT, INSERT, UPDATE")
 
-        print(complete_query[840:860])
         return complete_query
 
     def run_bq_query(self, query: str) -> RowIterator:
