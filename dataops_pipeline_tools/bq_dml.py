@@ -457,6 +457,7 @@ class BigQueryDML:
         else:
             raise ValueError("query_type not one of SELECT, INSERT, UPDATE")
 
+        print(complete_query[840:860])
         return complete_query
 
     def run_bq_query(self, query: str) -> RowIterator:
