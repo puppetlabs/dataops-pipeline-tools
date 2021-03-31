@@ -196,30 +196,30 @@ class BigQueryDML:
         else:
             return False
 
-    def alter_timestamps(self, data: dict) -> dict:
-        """
-        Takes in a list of keys that represent values that are timestamps in data dictionary.
-        Passes each key's value to check_timestamp, then updates dictionary key to use
-        value returned by check_timestamp
+    # def alter_timestamps(self, data: dict) -> dict:
+    #     """
+    #     Takes in a list of keys that represent values that are timestamps in data dictionary.
+    #     Passes each key's value to check_timestamp, then updates dictionary key to use
+    #     value returned by check_timestamp
 
-        Args:
-            data: The dictionary to update values for
-            keys: The list of keys that represent datetime values in the dictionary
-        Returns:
-            The dictionary with updated datetime values
-        """
+    #     Args:
+    #         data: The dictionary to update values for
+    #         keys: The list of keys that represent datetime values in the dictionary
+    #     Returns:
+    #         The dictionary with updated datetime values
+    #     """
 
-        for key, value in data.items():
-            if isinstance(value, dict):
-                self.alter_timestamps(value)
-            try:
-                parse(data[key])
-                timestamp = self.__check_timestamp(data[key])
-                data[key] = timestamp
-            except:
-                logging.debug(f"Value for {key} is {value}, not a timestamp")
+    #     for key, value in data.items():
+    #         if isinstance(value, dict):
+    #             self.alter_timestamps(value)
+    #         try:
+    #             parse(data[key])
+    #             timestamp = self.__check_timestamp(data[key])
+    #             data[key] = timestamp
+    #         except:
+    #             logging.debug(f"Value for {key} is {value}, not a timestamp")
 
-        return data
+    #     return data
 
     @staticmethod
     def parse_insert_columns(data: dict, **kwargs) -> str:
@@ -238,6 +238,8 @@ class BigQueryDML:
         key_string = kwargs.get("base_string", "(")
 
         for key, _ in data.items():
+            if self.__check_for_reserved_keyword(key):
+                key = f"`{key}`"
             key_string = key_string + f"{key}, "
 
         if key_string.endswith(", "):
@@ -267,12 +269,12 @@ class BigQueryDML:
                 # if self.__check_for_reserved_keyword(value):
                 #     value = f"`{value}`"
 
-                if "https://" in value:
-                    value = f'"{value}"'
-                if "-" in value:
-                    value = f'"{value}"'
-                if " " in value:
-                    value = f'"{value}"'
+                # if "https://" in value:
+                #     value = f'"{value}"'
+                # if "-" in value:
+                #     value = f'"{value}"'
+                # if " " in value:
+                value = f'"{value}"'
                 values = values + f"{value}, "
 
             elif isinstance(value, datetime.datetime):
@@ -369,8 +371,8 @@ class BigQueryDML:
                 # if self.__check_for_reserved_keyword(value):
                 #     value = f"`{value}`"
 
-                if "https://" in value:
-                    value = f'"{value}"'
+                # if "https://" in value:
+                value = f'"{value}"'
                 query = query + f"{key} = {value}, "
 
             elif isinstance(value, int):
