@@ -7,7 +7,7 @@ data ETL jobs by the DataOps team
 
 setup(
     name='dataops_pipeline_tools',
-    version='0.0.57',
+    version='0.0.58',
     url='https://github.com/puppetlabs/dataops-pipeline-tools',
     author_email='dataops-development@puppet.com',
     packages=['dataops_pipeline_tools'],
@@ -16,7 +16,8 @@ setup(
         'requests==2.23.0',
         'bigquery-schema-generator==0.5.1',
         'jsonlines==1.2.0',
-        'smart-open[all]==4.0.1'
+        'smart-open[all]==4.0.1',
+        'google-cloud-bigquery==2.12.0'
     ],
     keywords=['DataOps', 'Pipeline'],
     description='Python Library for DataOps functions',

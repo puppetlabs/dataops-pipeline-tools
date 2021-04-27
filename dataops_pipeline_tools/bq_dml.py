@@ -283,17 +283,6 @@ class BigQueryDML:
             elif isinstance(value, int):
                 values = values + f"{value}, "
 
-            # elif isinstance(value, list):
-            #     child = "["
-            #     for item in value:
-            #         if isinstance(item, dict):
-            #             child = child + f"({self.parse_insert_values(item).rstrip(', ')}), "
-            #         else:
-            #             child = child + f"{item}, "
-            #     if child.endswith(", "):
-            #         child = child[:-2]
-            #     values = values + f"{child}], "
-
             elif isinstance(value, dict):
                 child = self.parse_insert_values(value)
                 if child.endswith(", "):
@@ -329,25 +318,6 @@ class BigQueryDML:
 
         results = f"{keys}{values})"
         return results
-
-    # def parse_update_lists(self, data: list, **kwargs) -> str:
-
-    #     string = "ARRAY("
-    #     for item in data:
-    #         if isinstance(item, dict):
-    #             for key, value in item.items():
-    #                 if isinstance(value, list):
-    #                     info = self.parse_update_lists(value)
-    #                 else:
-
-    #             # child = self.parse_update_query_data(item, current_query='STRUCT(')
-    #             # string.append(f"{child[:-2]})")
-    #         else:
-        #         child = f"{item}"
-        #         string.append(child)
-        # formatted_string = ', '.join(string).rstrip(", ")
-        # query = query + f"{key} = [{formatted_string}], "
-
 
     def parse_update_query_data(self, data: dict, **kwargs) -> str:
         """
@@ -400,19 +370,6 @@ class BigQueryDML:
                 value = self.__check_timestamp(value.strftime("%Y-%m-%dT%H:%M:%SZ"))
                 query = query + f"{key} = TIMESTAMP({value}), "
 
-            # elif isinstance(value, list):
-            #     string = self.parse_update_lists(value)
-                # string = []
-                # for item in value:
-                #     if isinstance(item, dict):
-                #         child = self.parse_update_query_data(item, current_query='STRUCT(')
-                #         string.append(f"{child[:-2]})")
-                #     else:
-                #         child = f"{item}"
-                #         string.append(child)
-                # formatted_string = ', '.join(string).rstrip(", ")
-                # query = query + f"{key} = [{formatted_string}], "
-
             elif isinstance(value, dict):
                 query = self.parse_update_query_data(
                     value, parent_key=key, current_query=query
@@ -429,11 +386,10 @@ class BigQueryDML:
 
         Args:
             **kwargs: Used due to variable number of arguments that can be passed.
-            Sub-args:
-                data: The dictionary you want to create an insert or update DML statement for
-                query_type: The type of query, e.g. SELECT, INSERT, or UPDATE
-                query_select: A selector for a SELECT statement, if not passed * is used
-                query_where: A WHERE clause statement, e.g. WHERE id = data['id']
+            data: The dictionary you want to create an insert or update DML statement for
+            query_type: The type of query, e.g. SELECT, INSERT, or UPDATE
+            query_select: A selector for a SELECT statement, if not passed * is used
+            query_where: A WHERE clause statement, e.g. WHERE id = data['id']
         Returns:
             A full, BigQuery compliant DML query string
         """
