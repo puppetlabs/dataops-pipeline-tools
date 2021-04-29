@@ -534,6 +534,7 @@ class BigQueryDML:
 
             row_data = OrderedDict(sorted(self.create_bq_payload(next(iter(check_for_rows))).items()))
             update_dict = {k:v for k, v in data.items() if data[k] != row_data[k]}
+            update_dict['id'] = data['id']
 
             update = self.update_record(update_dict)
 
