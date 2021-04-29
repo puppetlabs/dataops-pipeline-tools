@@ -509,7 +509,7 @@ class BigQueryDML:
             A success or failure message from the query run
         """
 
-        query_where = f"WHERE id = {data['id']}"
+        query_where = f"WHERE id = '{data['id']}'"
 
         search_query = self.generate_sql_query(
             query_type="SELECT", query_where=query_where
