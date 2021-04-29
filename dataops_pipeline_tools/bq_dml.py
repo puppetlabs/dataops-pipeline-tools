@@ -523,9 +523,9 @@ class BigQueryDML:
             insert = self.insert_record(data)
 
             if insert:
-                results = f"INSERT successful for ticket metric {data['id']}"
+                results = f"INSERT successful for record {data['id']}"
             else:
-                results = f"INSERT failed for ticket metric {data['id']}"
+                results = f"INSERT failed for record {data['id']}"
 
         else:
 
@@ -533,8 +533,8 @@ class BigQueryDML:
             update = self.update_record(data)
 
             if update:
-                results = f"UPDATE successful for ticket metric {data['id']}"
+                results = f"UPDATE successful for record {data['id']}"
             else:
-                results = f"UPDATE failed for ticket metric {data['id']}"
+                results = f"UPDATE failed for record {data['id']}"
 
         return results
