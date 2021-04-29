@@ -533,7 +533,7 @@ class BigQueryDML:
             logging.info(f"UPDATING RECORD: {data['id']}")
 
             row_data = OrderedDict(sorted(self.create_bq_payload(next(iter(check_for_rows))).items()))
-            update_dict = {k:v for k, v in data.items() if row_data[k] == data[k]}
+            update_dict = {k:v for k, v in data.items() if data[k] != row_data[k]}
 
             update = self.update_record(update_dict)
 
