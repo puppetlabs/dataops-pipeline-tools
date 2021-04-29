@@ -534,7 +534,7 @@ class BigQueryDML:
 
             keys = data.keys()
             raw_row = self.create_bq_payload(next(iter(check_for_rows)))
-            row_data = {k:v for k, v in raw_row.items if k in keys}
+            row_data = {k:v for k, v in raw_row.items() if k in keys}
 
             row_data = OrderedDict(sorted(row_data.items()))
 
