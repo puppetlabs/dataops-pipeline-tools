@@ -6,6 +6,7 @@ a dictionary input to the class.
 
 import logging
 import datetime
+from collections import OrderedDict
 
 from dateutil.parser import parse
 
@@ -530,7 +531,11 @@ class BigQueryDML:
         else:
 
             logging.info(f"UPDATING RECORD: {data['id']}")
-            update = self.update_record(data)
+
+            row_data = OrderedDict(sorted(check_for_rows[0].items()))
+            update_dict = {k:v for k, v in data if row_data[k] == data[k]}
+
+            update = self.update_record(update_dict)
 
             if update:
                 results = f"UPDATE successful for record {data['id']}"
