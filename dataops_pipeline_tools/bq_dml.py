@@ -485,7 +485,7 @@ class BigQueryDML:
             The results from the API call
         """
 
-        query_where = f"WHERE id = {data['id']}"
+        query_where = f"WHERE id = '{data['id']}'"
 
         update_query = self.generate_sql_query(
             query_type="UPDATE", query_where=query_where, data=data
