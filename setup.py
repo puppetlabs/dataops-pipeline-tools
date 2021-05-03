@@ -17,7 +17,7 @@ setup(
         'bigquery-schema-generator==0.5.1',
         'jsonlines==1.2.0',
         'smart-open[all]==4.0.1',
-        'google-cloud-bigquery==2.12.0'
+        'google-cloud-bigquery==2.15.0'
     ],
     keywords=['DataOps', 'Pipeline'],
     description='Python Library for DataOps functions',
